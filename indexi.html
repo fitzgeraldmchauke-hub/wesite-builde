@@ -2,228 +2,136 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mini Website Builder</title>
+<title>Mini Website Builder PRO</title>
 
-<!-- Favicon / App Icon -->
+<!-- Favicon only -->
 <link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#020617">
 
 <style>
-  * { box-sizing: border-box; }
-
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #020617, #0f172a);
-    color: #e5e7eb;
-  }
-
-  header {
-    padding: 16px 28px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 24px;
-    font-weight: 800;
-    background: #020617;
-    border-bottom: 1px solid #1e293b;
-  }
-
-  header img {
-    height: 36px;
-    width: 36px;
-    cursor: pointer;
-  }
-
-  .container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 2fr;
-    gap: 16px;
-    padding: 16px;
-    height: calc(100vh - 72px);
-  }
-
-  .panel {
-    background: #020617;
-    border: 1px solid #1e293b;
-    border-radius: 16px;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .panel h2 {
-    margin: 0 0 10px;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #60a5fa;
-  }
-
-  textarea {
-    flex: 1;
-    resize: none;
-    background: #020617;
-    color: #e5e7eb;
-    border: none;
-    outline: none;
-    font-family: monospace;
-    font-size: 14px;
-    padding: 10px;
-    border-radius: 10px;
-  }
-
-  iframe {
-    flex: 1;
-    width: 100%;
-    border-radius: 12px;
-    border: none;
-    background: white;
-  }
-
-  .buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  button {
-    flex: 1;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    background: #2563eb;
-    color: white;
-  }
-
-  button.secondary {
-    background: #020617;
-    border: 1px solid #1e293b;
-  }
-
-  button:hover {
-    background: #1d4ed8;
-  }
-
-  .publish-box {
-    display: none;
-    margin-top: 10px;
-    padding: 12px;
-    border-radius: 10px;
-    background: #020617;
-    border: 1px solid #1e293b;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .publish-box strong {
-    color: #93c5fd;
-  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,sans-serif; background:#0f172a; color:#e5e7eb; }
+  header { padding:16px; font-size:24px; font-weight:800; background:#020617; border-bottom:1px solid #1e293b; text-align:center; }
+  .container { display:grid; grid-template-columns:1fr 1fr 2fr; gap:16px; padding:16px; height:calc(100vh - 72px); }
+  .panel { background:#020617; border:1px solid #1e293b; border-radius:16px; padding:14px; display:flex; flex-direction:column; }
+  .panel h2 { margin:0 0 10px; font-size:12px; color:#60a5fa; text-transform:uppercase; letter-spacing:1px; }
+  textarea { flex:1; resize:none; background:#020617; color:#e5e7eb; border:none; outline:none; font-family:monospace; font-size:14px; padding:10px; border-radius:10px; }
+  iframe { flex:1; width:100%; border-radius:12px; border:none; background:white; }
+  .buttons { display:flex; gap:10px; margin-top:10px; }
+  button { flex:1; padding:10px; border-radius:10px; border:none; font-weight:700; cursor:pointer; background:#2563eb; color:white; }
+  button.secondary { background:#020617; border:1px solid #1e293b; }
+  button:hover { background:#1d4ed8; }
+  .publish-box { display:none; margin-top:10px; padding:12px; border-radius:10px; background:#020617; border:1px solid #1e293b; font-size:14px; line-height:1.5; }
+  .publish-box strong { color:#93c5fd; }
+  .device-toggle { display:flex; gap:10px; margin-top:10px; }
+  .device-toggle button { flex:1; font-size:12px; }
+  .project-list { margin-top:10px; flex:0 0 auto; display:flex; flex-direction:column; gap:5px; }
+  .project-list button { font-size:12px; padding:6px; border-radius:8px; background:#1e293b; border:none; cursor:pointer; color:white; }
+  .project-list button:hover { background:#2563eb; }
 </style>
 </head>
 
 <body>
 
-<header>
-  <img src="logo.png" alt="Logo" onclick="location.reload()">
-  <span>Mini Website Builder</span>
-</header>
+<header>Mini Website Builder PRO</header>
 
 <div class="container">
 
-  <!-- LEFT -->
+  <!-- LEFT PANEL -->
   <div class="panel">
     <h2>Insert Code</h2>
-    <textarea id="code">
-<h1>Hello 👋</h1>
-<p>This is a REAL website.</p>
-<p>You can build anything here.</p>
-    </textarea>
+    <textarea id="code"><h1>Hello 👋</h1><p>This is a real website.</p></textarea>
+    <div class="project-list" id="projects"></div>
   </div>
 
-  <!-- MIDDLE -->
+  <!-- MIDDLE PANEL -->
   <div class="panel">
     <h2>CSS Styling</h2>
-    <textarea id="css">
-body {
-  font-family: Arial, sans-serif;
-  background: #f8fafc;
-  color: #0f172a;
-  padding: 20px;
-}
-
-h1 {
-  color: #2563eb;
-}
-    </textarea>
+    <textarea id="css">body { font-family:Arial; background:#f8fafc; color:#0f172a; padding:20px; } h1 { color:#2563eb; }</textarea>
+    <div class="device-toggle">
+      <button onclick="setDevice('desktop')">Desktop</button>
+      <button onclick="setDevice('tablet')">Tablet</button>
+      <button onclick="setDevice('mobile')">Mobile</button>
+    </div>
   </div>
 
-  <!-- RIGHT -->
+  <!-- RIGHT PANEL -->
   <div class="panel">
     <h2>Live Website</h2>
     <iframe id="preview"></iframe>
-
     <div class="buttons">
       <button id="export">Export</button>
       <button class="secondary" id="netlify">Publish</button>
     </div>
-
     <div class="publish-box" id="publishBox">
       <strong>Publish your site (FREE):</strong><br><br>
-      ✔ File downloads automatically<br>
-      ✔ Netlify opens in a new tab<br>
-      ✔ Drag file into Netlify Drop<br><br>
-      🚀 You get a public link instantly<br>
-      🚫 No domain needed
+      ✔ File downloads automatically<br>✔ Netlify opens in a new tab<br>✔ Drag file into Netlify Drop<br><br>🚀 You get a public link instantly<br>🚫 No domain needed
     </div>
   </div>
 
 </div>
 
 <script>
-  const code = document.getElementById("code");
-  const css = document.getElementById("css");
-  const preview = document.getElementById("preview");
-  const publishBox = document.getElementById("publishBox");
+const code = document.getElementById('code');
+const css = document.getElementById('css');
+const preview = document.getElementById('preview');
+const publishBox = document.getElementById('publishBox');
+const projectsEl = document.getElementById('projects');
 
-  function updatePreview() {
-    preview.srcdoc = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<style>${css.value}</style>
-</head>
-<body>
-${code.value}
-</body>
-</html>
-`;
+function updatePreview() {
+  preview.srcdoc = `<!DOCTYPE html><html><head><meta charset='UTF-8'><style>${css.value}</style></head><body>${code.value}</body></html>`;
+}
+
+code.addEventListener('input', updatePreview);
+css.addEventListener('input', updatePreview);
+updatePreview();
+
+// Export website
+document.getElementById('export').onclick = () => {
+  const blob = new Blob([preview.srcdoc], { type:'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+};
+
+// Publish to Netlify
+document.getElementById('netlify').onclick = () => {
+  document.getElementById('export').click();
+  publishBox.style.display = 'block';
+  setTimeout(()=>window.open('https://app.netlify.com/drop','_blank'),500);
+};
+
+// Device preview
+function setDevice(device) {
+  if(device==='desktop') preview.style.width='100%';
+  if(device==='tablet') preview.style.width='768px';
+  if(device==='mobile') preview.style.width='375px';
+}
+
+// Project save/load using localStorage
+function loadProject(name) {
+  let projects = JSON.parse(localStorage.getItem('projects')||'{}');
+  if(projects[name]) {
+    code.value = projects[name].code;
+    css.value = projects[name].css;
+    updatePreview();
   }
+}
 
-  code.addEventListener("input", updatePreview);
-  css.addEventListener("input", updatePreview);
-  updatePreview();
+function renderProjects() {
+  projectsEl.innerHTML='';
+  let projects = JSON.parse(localStorage.getItem('projects')||'{}');
+  for(let name in projects){
+    let btn = document.createElement('button');
+    btn.textContent = name;
+    btn.onclick = ()=>loadProject(name);
+    projectsEl.appendChild(btn);
+  }
+}
 
-  document.getElementById("export").onclick = () => {
-    const blob = new Blob([preview.srcdoc], { type: "text/html" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "index.html";
-    a.click();
-  };
-
-  document.getElementById("netlify").onclick = () => {
-    document.getElementById("export").click();
-    publishBox.style.display = "block";
-    setTimeout(() => {
-      window.open("https://app.netlify.com/drop", "_blank");
-    }, 500);
-  };
+renderProjects();
 </script>
 
 </body>
