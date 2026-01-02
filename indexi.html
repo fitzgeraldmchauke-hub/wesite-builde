@@ -1,96 +1,171 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mini Web Builder</title>
+<title>Mini Website Builder</title>
+
 <style>
-  body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; background: #f5f5f5; }
-  h1 { margin-top: 20px; }
-  #container { display: flex; width: 95%; max-width: 1200px; margin-top: 20px; }
-  #editor { width: 50%; margin-right: 10px; display: flex; flex-direction: column; }
-  textarea { width: 100%; height: 300px; margin-bottom: 10px; font-family: monospace; font-size: 14px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: vertical; }
-  button { padding: 10px; font-size: 16px; border: none; background: #007bff; color: white; border-radius: 5px; cursor: pointer; margin-bottom: 10px; }
-  button:hover { background: #0056b3; }
-  #preview { width: 50%; }
-  iframe { width: 100%; height: 620px; border: 1px solid #ccc; border-radius: 5px; }
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #020617);
+    color: #e5e7eb;
+  }
+
+  header {
+    padding: 20px 30px;
+    font-size: 26px;
+    font-weight: 700;
+    background: #020617;
+    border-bottom: 1px solid #1e293b;
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 16px;
+    padding: 16px;
+    height: calc(100vh - 80px);
+  }
+
+  .panel {
+    background: #020617;
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #1e293b;
+  }
+
+  .panel h2 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #93c5fd;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  textarea {
+    flex: 1;
+    resize: none;
+    background: #020617;
+    color: #e5e7eb;
+    border: none;
+    outline: none;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    background: white;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 10px;
+    background: #2563eb;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #1d4ed8;
+  }
 </style>
 </head>
+
 <body>
 
+<header>Mini Website Builder</header>
 
-<h1>Mini Web Builder</h1>
-<div id="container">
-  <div id="editor">
-    <label>HTML</label>
-    <textarea id="html">&lt;h1&gt;Hello World&lt;/h1&gt;</textarea>
-    
-    <label>CSS</label>
-    <textarea id="css">body { background: #fff; color: #000; }</textarea>
-    
-    <label>JS</label>
-    <textarea id="js">console.log('Hello!');</textarea>
-    
-    <button id="exportBtn">Export as HTML</button>
+<div class="container">
+
+  <!-- LEFT: Insert Code -->
+  <div class="panel">
+    <h2>Insert Code</h2>
+    <textarea id="codeInput">
+<h1>Hello 👋</h1>
+<p>This is a website inside a website.</p>
+    </textarea>
   </div>
 
-
-  <div id="preview">
-    <iframe id="previewFrame"></iframe>
+  <!-- MIDDLE: CSS -->
+  <div class="panel">
+    <h2>Style (CSS)</h2>
+    <textarea id="styleInput">
+body {
+  font-family: Arial;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 20px;
+}
+    </textarea>
   </div>
+
+  <!-- RIGHT: Preview -->
+  <div class="panel">
+    <h2>Live Preview</h2>
+    <iframe id="preview"></iframe>
+    <button id="export">Export Site</button>
+  </div>
+
 </div>
 
-
 <script>
-const htmlArea = document.getElementById('html');
-const cssArea = document.getElementById('css');
-const jsArea = document.getElementById('js');
-const iframe = document.getElementById('previewFrame');
-const exportBtn = document.getElementById('exportBtn');
+  const codeInput = document.getElementById("codeInput");
+  const styleInput = document.getElementById("styleInput");
+  const preview = document.getElementById("preview");
 
+  function updatePreview() {
+    preview.srcdoc = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>${styleInput.value}</style>
+      </head>
+      <body>
+        ${codeInput.value}
+      </body>
+      </html>
+    `;
+  }
 
-function updatePreview() {
-  const htmlContent = htmlArea.value;
-  const cssContent = `<style>${cssArea.value}</style>`;
-  const jsContent = `<script>${jsArea.value}<\/script>`;
-  iframe.srcdoc = htmlContent + cssContent + jsContent;
-}
+  codeInput.addEventListener("input", updatePreview);
+  styleInput.addEventListener("input", updatePreview);
 
+  updatePreview();
 
-// Update live preview as user types
-htmlArea.addEventListener('input', updatePreview);
-cssArea.addEventListener('input', updatePreview);
-jsArea.addEventListener('input', updatePreview);
-
-
-// Initial preview
-updatePreview();
-
-
-// Export combined HTML
-exportBtn.addEventListener('click', () => {
-  const content = `<!DOCTYPE html>
-<html lang="en">
+  document.getElementById("export").onclick = () => {
+    const content = `<!DOCTYPE html>
+<html>
 <head>
-<meta charset="UTF-8">
-<title>My Mini Site</title>
-<style>${cssArea.value}</style>
+<style>${styleInput.value}</style>
 </head>
 <body>
-${htmlArea.value}
-<script>${jsArea.value}<\/script>
+${codeInput.value}
 </body>
 </html>`;
-  
-  const blob = new Blob([content], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'my-mini-site.html';
-  a.click();
-  URL.revokeObjectURL(url);
-});
-</script>
 
+    const blob = new Blob([content], { type: "text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "my-website.html";
+    a.click();
+  };
+</script>
 
 </body>
 </html>
