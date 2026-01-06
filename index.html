@@ -65,7 +65,7 @@ iframe {
   width: 100%;
   border: none;
   border-radius: 12px;
-  background: white;
+  background: #0f172a;
 }
 
 .buttons {
@@ -126,8 +126,8 @@ function render() {
   // Detect Python-like code
   const looksLikePython = /print\s*\(|input\s*\(|def\s+|elif|import\s+|:\s*$|True|False|None/.test(code);
   const looksLikeHTML = /<[^>]+>/.test(code);
-  const looksLikeCSS = /\{[\s\S]*?\}/.test(code) && /:/.test(code);
   const looksLikeJS = /function\s*\(|=>|console\.log|\b(let|const|var)\b/.test(code);
+  const looksLikeCSS = /\{[\s\S]*?\}/.test(code) && /:/.test(code);
 
   if (looksLikePython && !looksLikeHTML && !looksLikeCSS && !looksLikeJS) {
     preview.srcdoc = `
@@ -141,11 +141,17 @@ function render() {
     return;
   }
 
-  // Render all user code directly
+  // Otherwise, render as full HTML
+  // Wrap user code into srcdoc directly
   preview.srcdoc = `
 <!DOCTYPE html>
 <html>
-<head><style></style></head>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { margin:0; font-family: sans-serif; background: #0f172a; color: #e5e7eb; }
+  </style>
+</head>
 <body>
 ${code}
 </body>
