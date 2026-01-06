@@ -130,19 +130,27 @@ function render() {
   const looksLikeCSS = /\{[\s\S]*?\}/.test(code) && /:/.test(code);
 
   if (looksLikePython && !looksLikeHTML && !looksLikeCSS && !looksLikeJS) {
+    // Show Python nicely in iframe
     preview.srcdoc = `
 <!DOCTYPE html>
 <html>
-<body style="font-family:monospace;background:#0f172a;color:#e5e7eb;padding:12px">
-<b>Python-like code (not executed)</b>
-<pre>${escapeHTML(code)}</pre>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { margin:0; font-family: monospace; background: #0f172a; color: #e5e7eb; padding: 12px; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    b { color: #60a5fa; }
+  </style>
+</head>
+<body>
+  <b>Python-like code (not executed):</b>
+  <pre>${escapeHTML(code)}</pre>
 </body>
 </html>`;
     return;
   }
 
-  // Otherwise, render as full HTML
-  // Wrap user code into srcdoc directly
+  // Otherwise, render as full HTML/CSS/JS
   preview.srcdoc = `
 <!DOCTYPE html>
 <html>
