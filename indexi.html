@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mini Website Builder (Fixed)</title>
+<title>Mini Website Builder</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="data:,">
 
@@ -16,15 +16,10 @@ header{padding:14px;font-size:22px;font-weight:800;background:#020617;border-bot
 textarea{flex:1;background:#020617;color:#e5e7eb;border:none;outline:none;font-family:monospace;font-size:14px;padding:8px;border-radius:10px}
 iframe{flex:1;width:100%;border:none;border-radius:12px;background:white}
 button{padding:8px;border-radius:10px;border:none;font-weight:700;cursor:pointer;background:#2563eb;color:white}
-button.secondary{background:#020617;border:1px solid #1e293b}
 .buttons{display:flex;gap:8px;margin-top:8px}
-.project-list{margin-top:6px;display:flex;flex-direction:column;gap:4px}
-.project-list button{font-size:12px;background:#1e293b}
-.account{margin-top:8px;display:flex;flex-direction:column;gap:4px}
-.account input{background:#020617;border:1px solid #1e293b;border-radius:8px;padding:6px;color:white}
-.small{font-size:11px;padding:6px}
 </style>
 </head>
+
 <body>
 <header>Mini Website Builder</header>
 
@@ -32,7 +27,6 @@ button.secondary{background:#020617;border:1px solid #1e293b}
   <div class="panel">
     <h2>HTML</h2>
     <textarea id="html" placeholder="Write HTML here"></textarea>
-    <div class="project-list" id="projects"></div>
   </div>
 
   <div class="panel">
@@ -44,81 +38,40 @@ button.secondary{background:#020617;border:1px solid #1e293b}
     <h2>Preview</h2>
     <iframe id="preview"></iframe>
     <div class="buttons">
-      <button onclick="exportSite()">export</button>
-      <button class="secondary" onclick="publish()">publish</button>
+      <button onclick="exportSite()">Export</button>
     </div>
   </div>
 </div>
 
 <script>
-const htmlEl=document.getElementById('html')
-const cssEl=document.getElementById('css')
-const preview=document.getElementById('preview')
-const projectsEl=document.getElementById('projects')
+const htmlEl = document.getElementById('html')
+const cssEl = document.getElementById('css')
+const preview = document.getElementById('preview')
 
-let projects=JSON.parse(localStorage.getItem('mw_projects')||'{}')
-
-function draw(){
- projectsEl.innerHTML=''
- for(const n in projects){
-  const b=document.createElement('button')
-  b.textContent=n
-  b.onclick=()=>loadProject(n)
-  projectsEl.appendChild(b)
- }
+function render(){
+  const code = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>${cssEl.value}</style>
+</head>
+<body>
+${htmlEl.value}
+</body>
+</html>`
+  preview.srcdoc = code
 }
 
-draw();
-}
-
-function login(){
- const u=user.value,p=pass.value
- if(!users[u]||users[u].p!==p)return alert('wrong')
- current=u
- save();draw();
-}
-
-function saveProject(){
- if(!current)return alert('login first')
- const name=prompt('project name')
- if(!name)return
- users[current].projects[name]={html:htmlEl.value,css:cssEl.value}
- save();draw();
-}
-
-function loadProject(name){
- const p=users[current].projects[name]
- htmlEl.value=p.html
- cssEl.value=p.css
- render()
-}
-
-function draw(){
- projectsEl.innerHTML=''
- if(!current)return
- for(const n in users[current].projects){
-  const b=document.createElement('button')
-  b.textContent=n
-  b.onclick=()=>loadProject(n)
-  projectsEl.appendChild(b)
- }
-}
+htmlEl.addEventListener('input', render)
+cssEl.addEventListener('input', render)
 
 function exportSite(){
- const blob=new Blob([preview.srcdoc],{type:'text/html'})
- const a=document.createElement('a')
- a.href=URL.createObjectURL(blob)
- a.download='index.html'
- a.click()
+  const blob = new Blob([preview.srcdoc], {type:'text/html'})
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = 'index.html'
+  a.click()
 }
-
-function publish(){
- exportSite();
- setTimeout(()=>window.open('https://app.netlify.com/drop','_blank'),300)
-}
-
-draw()
 </script>
 </body>
 </html>
-
