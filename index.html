@@ -5,7 +5,7 @@
 <title>Mini Website Builder</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Favicon -->
+<!-- Favicon only -->
 <link rel="icon" href="image.png">
 
 <style>
@@ -19,18 +19,12 @@ body {
 }
 
 header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   padding: 14px;
   background: #020617;
   border-bottom: 1px solid #1e293b;
-  font-weight: 800;
+  text-align: center;
   font-size: 20px;
-}
-
-header img {
-  height: 36px;
+  font-weight: 800;
 }
 
 .container {
@@ -38,7 +32,7 @@ header img {
   grid-template-columns: 1fr 2fr;
   gap: 12px;
   padding: 12px;
-  height: calc(100vh - 70px);
+  height: calc(100vh - 64px);
 }
 
 .panel {
@@ -92,60 +86,92 @@ button {
   background: #2563eb;
   color: white;
 }
-
-button.secondary {
-  background: #020617;
-  border: 1px solid #1e293b;
-}
 </style>
 </head>
 
 <body>
 
-<header>
-  <img src="image.png" alt="Logo">
-  Mini Website Builder
-</header>
+<header>Mini Website Builder</header>
 
 <div class="container">
 
-  <!-- CODE PANEL -->
   <div class="panel">
-    <h2>HTML Only</h2>
-    <textarea id="html" placeholder="Write pure HTML here (no JS, no CSS)"></textarea>
+    <h2>Any Code</h2>
+    <textarea id="code" placeholder="Type HTML, CSS, JS, or Python-like code"></textarea>
   </div>
 
-  <!-- PREVIEW PANEL -->
   <div class="panel">
     <h2>Preview</h2>
     <iframe id="preview"></iframe>
 
     <div class="buttons">
       <button onclick="render()">Preview</button>
-      <button class="secondary" onclick="exportSite()">Export</button>
-      <button class="secondary" onclick="publish()">Publish (Netlify)</button>
+      <button onclick="exportSite()">Export</button>
+      <button onclick="publish()">Publish (Netlify)</button>
     </div>
   </div>
 
 </div>
 
 <script>
-const htmlEl = document.getElementById("html");
+const codeEl = document.getElementById("code");
 const preview = document.getElementById("preview");
 
+function escapeHTML(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 function render() {
+  const code = codeEl.value;
+
+  const looksLikePython =
+    /print\s*\(|input\s*\(|def\s+|elif|import\s+|:\s*$|True|False|None/m.test(code);
+
+  const looksLikeHTML =
+    /<[^>]+>/m.test(code);
+
+  const looksLikeCSS =
+    /\{[\s\S]*?\}/m.test(code) && /:/m.test(code);
+
+  const looksLikeJS =
+    /function\s*\(|=>|console\.log|\b(let|const|var)\b/m.test(code);
+
+  // Python-like (display only)
+  if (looksLikePython && !looksLikeHTML && !looksLikeCSS && !looksLikeJS) {
+    preview.srcdoc = `
+<!DOCTYPE html>
+<html>
+<body style="font-family:monospace;background:#0f172a;color:#e5e7eb;padding:12px">
+<b>Detected: Python-like code (not executed)</b>
+<pre>${escapeHTML(code)}</pre>
+</body>
+</html>`;
+    return;
+  }
+
+  // HTML renders
+  if (looksLikeHTML) {
+    preview.srcdoc = `
+<!DOCTYPE html>
+<html>
+<body>
+${code}
+</body>
+</html>`;
+    return;
+  }
+
+  // Everything else = safe text
   preview.srcdoc = `
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-${htmlEl.value}
+<body style="font-family:monospace;padding:12px">
+<pre>${escapeHTML(code)}</pre>
 </body>
-</html>
-`;
+</html>`;
 }
 
 function exportSite() {
@@ -157,16 +183,8 @@ function exportSite() {
 }
 
 function publish() {
-  alert(
-    "How to publish:\n\n" +
-    "1) Your site will download\n" +
-    "2) Netlify will open\n" +
-    "3) Drag index.html into Netlify"
-  );
   exportSite();
-  setTimeout(() => {
-    window.open("https://app.netlify.com/drop", "_blank");
-  }, 500);
+  window.open("https://app.netlify.com/drop", "_blank");
 }
 </script>
 
